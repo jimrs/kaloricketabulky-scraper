@@ -7,7 +7,7 @@ def getPages(start=1, limit=20026):
         data = requests.get(url + '?page=' + str(i))
         print(data.url)
 
-        with open('out/tab' + str(i), 'w') as f:
+        with open('raw/tab' + str(i), 'w') as f:
             f.write(data.text)
 
 if __name__ == '__main__':
