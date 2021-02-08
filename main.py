@@ -38,3 +38,6 @@ if __name__ == '__main__':
     # getPages(2164, 10001)
     parseNames('raw/tab1')
     parseNumbers('raw/tab1')
+    #TODO add names of columns
+    #TODO combine together
+    #TODO export to csv table/json
