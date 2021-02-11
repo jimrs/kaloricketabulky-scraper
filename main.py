@@ -12,16 +12,13 @@ def getPages(start=1, limit=20026):
         with open('raw/tab' + str(i), 'w') as f:
             f.write(data.text)
 
-def parseNames(raw):
+def parseData(raw):
     with open(raw, 'r') as f:
         data = f.read()
         names = re.findall('(?<=reload>).+?(?=</a>)', data)
         names = names[0:10]
         print(names)
 
-def parseNumbers(raw):
-    with open(raw, 'r') as f:
-        data = f.read()
         numbers = re.findall('(?<=td md-cell hide-xs>)\s\d*?\s?,?\d*?(?=\s?</td>)', data)
 
         numbers_norm = []
@@ -32,12 +29,12 @@ def parseNumbers(raw):
 
         print(numbers_norm)
         # can be used for testing, must always equal 50
-        print(len(numbers_norm))
+        print(len(numbers_norm)
 
 if __name__ == '__main__':
     # getPages(2164, 10001)
-    parseNames('raw/tab1')
-    parseNumbers('raw/tab1')
+    parseData('raw/tab1')
+
     #TODO add names of columns
     #TODO combine together
     #TODO export to csv table/json
