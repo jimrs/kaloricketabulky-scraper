@@ -2,6 +2,7 @@ import requests
 import re
 import unicodedata
 import csv
+import os
 
 def getPages(start=1, limit=20026):
     # posledni validni je page=20025
@@ -13,29 +14,33 @@ def getPages(start=1, limit=20026):
         with open('raw/tab' + str(i), 'w') as f:
             f.write(data.text)
 
-def parseData(raw):
-    with open(raw, 'r') as f:
-        data = f.read()
-        names = _parseNames(data)
-        numbers = _parseNumbers(data)
+def parseData():
+    i = 0
+    table = []
+    for raw in os.scandir('raw'):
+        with open(raw, 'r') as f:
+            data = f.read()
+            names = _parseNames(data)
+            numbers = _parseNumbers(data)
 
-    # TODO cyklus pro projeti vsech souboru ve slozce raw
-    # TODO do promenne table pridavat dalsi a dalsi hodnoty
-    # TODO nasledne zapsat
-    table = _createTable(names, numbers)
+            table = _addToTable(names, numbers, table)
+
+        if i % 1000 == 0:
+            print(i)
+        i = i + 1
+    
     _writeTable(table)
 
 
 def _writeTable(table):
-    with open('out/test.csv', 'w', newline='') as f:
+    with open('out/db.csv', 'w', newline='') as f:
         wr = csv.writer(f, quoting=csv.QUOTE_ALL)
         header = ['Název', 'Energetická hodnota (kcal)', 'Bílkoviny (g)', 'Sacharidy (g)', 'Tuky (g)', 'Vláknina (g)']
         wr.writerow(header)
         wr.writerows(table)
 
 
-def _createTable(names, numbers):
-    table = []
+def _addToTable(names, numbers, table):
     for index, item in enumerate(names):
         row = [item]
         for i in range (index * 5, (index * 5) + 5):
@@ -43,7 +48,6 @@ def _createTable(names, numbers):
         table.append(row)
 
     # print(table)
-    # len must always be 10
     # print(len(table))
     return table
 
@@ -52,6 +56,9 @@ def _parseNames(raw_data):
     names = re.findall('(?<=reload>).+?(?=</a>)', raw_data)
     names = names[0:10]
     #print(names)
+    if len(names) != 10:
+        print("Warning: len of names doesn't equal 10.")
+        print(names)
     return names
 
 
@@ -67,11 +74,14 @@ def _parseNumbers(raw_data):
     #print(numbers_norm)
     # can be used for testing, must always equal 50
     #print(len(numbers_norm))
+    if len(numbers_norm) != 50:
+        print("Warning: len of numbers doesn't equal 10.")
+        print(numbers_norm)
     return numbers_norm
 
 
 if __name__ == '__main__':
-    # getPages(2164, 10001)
-    parseData('raw/tab1')
+    getPages(10001, 13001)
+    # parseData()
 
     #TODO json
