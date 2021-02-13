@@ -3,6 +3,7 @@ import re
 import unicodedata
 import csv
 import os
+import json
 
 def getPages(start=1, limit=20026):
     # posledni validni je page=20025
@@ -80,8 +81,34 @@ def _parseNumbers(raw_data):
     return numbers_norm
 
 
-if __name__ == '__main__':
-    # getPages()
-    parseData()
+def convertToJson(file):
+    data = []
+    with open(file, 'r') as f:
+        for row in csv.DictReader(f):
+            data.append(row)
 
-    #TODO json
+    with open('out/db.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False)
+
+
+if __name__ == '__main__':
+    while True:
+        act = input("Press 'g' to download the database from kaloricketabulky.cz, press 'c' to parse the raw data and create a CSV database, press 'j' to convert the DB to JSON. Press 'q' to quit.\n")
+
+        if act == 'g':
+            # TODO add input queries for start and limit
+            getPages()
+            print("Done!")
+        elif act == 'c':
+            print('Parsing the raw data and creating a CSV database ...')
+            parseData()
+            print("Done!")
+        elif act == 'j':
+            print("Converting to JSON ...")
+            convertToJson('out/db.csv')
+            print("Done!")
+        elif act == 'q':
+            print('Quitting.')
+            quit()
+        else:
+            print("Wrong input.")
