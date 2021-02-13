@@ -81,7 +81,7 @@ def _parseNumbers(raw_data):
 
 
 if __name__ == '__main__':
-    getPages(10001, 13001)
-    # parseData()
+    # getPages()
+    parseData()
 
     #TODO json
